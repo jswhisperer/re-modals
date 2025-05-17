@@ -1,0 +1,143 @@
+/* Modal container - hidden by default */
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.6);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+    
+    /* Center the modal content */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 100;
+}
+
+/* When the modal is targeted via URL hash, make it visible */
+.modal:target {
+  
+    opacity: 1;
+    pointer-events: auto;
+}
+
+/* Modal content box */
+.modal-content {
+    background-color: white;
+    padding: 2rem;
+    border-radius: 6px;
+    width: 90%;
+    max-width: 500px;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: 0 5px 30px rgba(0, 0, 0, 0.2);
+}
+
+/* Backdrop close link - covers the entire screen */
+.modal-backdrop {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    cursor: default;
+    z-index: -1; /* Place behind modal content */
+}
+
+dialog:modal {
+    transition: all 1s ease;
+    overlay: auto !important;
+}
+/* Keyframes for dialog and popover elements */
+@keyframes fadeIn {
+    from { opacity: 0 }
+    to { opacity: 1 }
+  }
+  @keyframes fadeOut {
+    from { opacity: 1 }
+    to { opacity: 0 }
+  }
+  
+  /* Keyframes for the backdrop pseudo-element */
+  @keyframes backdropFadeIn {
+    from { background: hsl(0 0% 0% / 0%) }
+    to { background: hsl(0 0% 0% / 50%) }
+  }
+  @keyframes backdropFadeOut {
+    from { background: hsl(0 0% 0% / 50%) }
+    to { background: hsl(0 0% 0% / 0%) }
+  }
+
+
+dialog::backdrop {
+    transition: all 1s ease;
+    opacity: 1;
+    transform: scaleX(1);
+  }
+  
+  [dialog] {
+    font-size: 1.2rem;
+    padding: 10px;
+  
+    /* Final state of the exit animation */
+    opacity: 0;
+    transform: scaleX(0);
+  
+    transition:
+      opacity 0.7s,
+      transform 0.7s,
+      overlay 0.7s allow-discrete,
+      display 0.7s allow-discrete;
+    /* Equivalent to
+    transition: all 0.7s allow-discrete; */
+  }
+  
+  /* Needs to be included after the previous [popover]:popover-open
+     rule to take effect, as the specificity is the same */
+  @starting-style {
+    [popover]:popover-open {
+      opacity: 0;
+      transform: scaleX(0);
+    }
+  }
+  
+  /* Transition for the popover's backdrop */
+  
+  [popover]::backdrop {
+    background-color: rgb(0 0 0 / 0%);
+    transition:
+      display 0.7s allow-discrete,
+      overlay 0.7s allow-discrete,
+      background-color 0.7s;
+    /* Equivalent to
+    transition: all 0.7s allow-discrete; */
+  }
+  
+  [popover]:popover-open::backdrop {
+    background-color: rgb(0 0 0 / 25%);
+  }
+  
+  /* Nesting selectors (&) cannot represent pseudo-elements, so this 
+     starting-style rule cannot be nested. */
+  
+  @starting-style {
+    [popover]:popover-open::backdrop {
+      background-color: rgb(0 0 0 / 0%);
+    }
+  }
+
+#modalexample {
+    animation: fadeOut 0.5s forwards;
+    &::backdrop {
+      animation: backdropFadeOut 0.5s forwards;
+    }
+    &[open] {
+      animation: fadeIn 0.5s forwards;
+      &::backdrop {
+        animation: backdropFadeIn 0.5s forwards;
+      }
+    }
+  }
